@@ -1,0 +1,903 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Antrenman">
+<meta name="theme-color" content="#0E0F12">
+<meta name="color-scheme" content="dark">
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,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">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<title>Antrenman Defteri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  :root{
+    --bg:#0E0F12;
+    --surface:#16181D;
+    --surface-2:#1C1F26;
+    --line:#24272E;
+    --line-soft:#1F2229;
+    --text:#E8E9EC;
+    --muted:#8A8F98;
+    --faint:#5A5F68;
+    --accent:#CBA25A;
+    --accent-dim:#3A311F;
+    --done:#7FB08A;
+    --done-dim:#1E2A22;
+    --danger:#C86B5E;
+    --radius:16px;
+    --radius-sm:11px;
+    --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    --display:"Archivo",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --safe-top:env(safe-area-inset-top,0px);
+    --safe-bot:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overscroll-behavior-y:none;
+  }
+  button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:none}
+  input{font-family:inherit}
+  ::selection{background:var(--accent-dim)}
+
+  #app{
+    max-width:520px;
+    margin:0 auto;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+
+  /* ---------- Header ---------- */
+  .top{
+    padding:calc(var(--safe-top) + 22px) 20px 14px;
+    display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+  }
+  .top .eyebrow{
+    font-family:var(--mono);
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 3px;
+  }
+  .top h1{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:26px;
+    letter-spacing:-.01em;
+    margin:0;line-height:1;
+    text-wrap:balance;
+  }
+  .week-pill{
+    flex:none;
+    font-family:var(--mono);
+    font-size:11px;letter-spacing:.04em;
+    color:var(--muted);
+    background:var(--surface);
+    border:1px solid var(--line);
+    padding:7px 11px;border-radius:999px;
+    text-align:right;line-height:1.25;
+  }
+  .week-pill b{color:var(--accent);font-weight:600}
+
+  /* ---------- Scroll area ---------- */
+  main{flex:1;padding:6px 16px 120px;min-height:0}
+
+  /* ---------- Day cards (home) ---------- */
+  .daycard{
+    display:block;width:100%;text-align:left;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 17px;
+    margin-bottom:12px;
+    position:relative;overflow:hidden;
+    transition:transform .12s ease,border-color .15s ease;
+  }
+  .daycard:active{transform:scale(.985);border-color:var(--accent)}
+  .daycard .tag{
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;
+  }
+  .daycard .dl{color:var(--faint)}
+  .daycard h2{
+    font-family:var(--display);font-weight:700;font-size:19px;
+    margin:5px 0 2px;letter-spacing:-.01em;line-height:1.15;
+  }
+  .daycard .meta{
+    font-size:13px;color:var(--muted);
+    display:flex;gap:14px;flex-wrap:wrap;margin-top:9px;
+  }
+  .daycard .meta .dot{color:var(--faint)}
+  .daycard .arrow{
+    position:absolute;right:16px;top:18px;color:var(--faint);
+    font-size:20px;line-height:1;
+  }
+  .daycard .last{color:var(--done)}
+
+  .section-label{
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--faint);margin:22px 4px 12px;
+  }
+
+  /* ---------- Session ---------- */
+  .backrow{
+    display:flex;align-items:center;gap:10px;
+    padding:calc(var(--safe-top) + 16px) 16px 4px;
+  }
+  .backbtn{
+    display:flex;align-items:center;gap:7px;
+    font-size:14px;color:var(--muted);
+    padding:8px 12px 8px 8px;border-radius:10px;
+    background:var(--surface);border:1px solid var(--line);
+  }
+  .backbtn:active{color:var(--text)}
+
+  .sesshead{padding:8px 20px 6px}
+  .sesshead .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  .sesshead h1{font-family:var(--display);font-weight:800;font-size:24px;margin:5px 0 0;letter-spacing:-.01em}
+  .sesshead .sub{font-size:13px;color:var(--muted);margin-top:3px}
+
+  /* arm toggle (Gün C) */
+  .armtoggle{
+    display:flex;gap:6px;margin:14px 16px 2px;
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:12px;padding:4px;
+  }
+  .armtoggle button{
+    flex:1;font-size:13px;font-weight:600;color:var(--muted);
+    padding:9px 0;border-radius:9px;letter-spacing:.01em;
+    transition:.15s;
+  }
+  .armtoggle button.on{background:var(--accent-dim);color:var(--accent)}
+
+  .exercise{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    margin:12px 0;
+    overflow:hidden;
+  }
+  .ex-head{
+    padding:14px 16px 12px;
+    border-bottom:1px solid var(--line-soft);
+    display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+  }
+  .ex-head h3{
+    font-family:var(--display);font-weight:700;font-size:16.5px;margin:0;letter-spacing:-.005em;line-height:1.2;
+  }
+  .ex-target{
+    flex:none;text-align:right;font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.5;
+  }
+  .ex-target b{color:var(--text);font-weight:600}
+  .ex-target .rir{color:var(--accent)}
+  .ex-prev{
+    font-family:var(--mono);font-size:11.5px;color:var(--faint);
+    padding:8px 16px 0;letter-spacing:.01em;
+  }
+  .ex-prev b{color:var(--muted);font-weight:500}
+
+  .sets{padding:8px 12px 12px}
+  .setrow{
+    display:grid;
+    grid-template-columns:26px 1fr 1fr 46px;
+    gap:8px;align-items:center;
+    padding:5px 4px;
+  }
+  .setrow .sidx{
+    font-family:var(--mono);font-size:12px;color:var(--faint);text-align:center;
+  }
+  .field{
+    display:flex;align-items:center;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:10px;overflow:hidden;
+    height:44px;
+  }
+  .field.filled{border-color:#33383F}
+  .field button{
+    width:34px;height:100%;flex:none;
+    color:var(--muted);font-size:19px;font-weight:500;line-height:1;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .field button:active{color:var(--accent);background:var(--accent-dim)}
+  .field input{
+    flex:1;width:100%;min-width:0;text-align:center;
+    background:none;border:none;color:var(--text);
+    font-family:var(--mono);font-size:15px;font-weight:600;
+    padding:0;outline:none;
+    -moz-appearance:textfield;
+  }
+  .field input::-webkit-outer-spin-button,
+  .field input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .field .unit{font-family:var(--mono);font-size:10px;color:var(--faint);padding-right:8px;letter-spacing:.02em}
+
+  .done-btn{
+    width:46px;height:44px;border-radius:10px;
+    background:var(--surface-2);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--faint);
+    transition:.14s;
+  }
+  .done-btn svg{width:20px;height:20px;display:block}
+  .done-btn.on{background:var(--done-dim);border-color:var(--done);color:var(--done)}
+  .setrow.done .field{border-color:var(--done-dim);background:#12160F}
+  .setrow.done input{color:var(--done)}
+
+  .colhead{
+    display:grid;grid-template-columns:26px 1fr 1fr 46px;gap:8px;
+    padding:2px 4px 4px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+  }
+  .colhead span{text-align:center}
+  .colhead span:first-child{text-align:center}
+
+  /* ---------- Save bar ---------- */
+  .savebar{
+    position:fixed;left:0;right:0;bottom:0;
+    padding:12px 16px calc(12px + var(--safe-bot));
+    background:linear-gradient(to top,var(--bg) 62%,transparent);
+    max-width:520px;margin:0 auto;
+    display:flex;gap:10px;
+    z-index:40;
+  }
+  .btn-primary{
+    flex:1;
+    background:var(--accent);color:#17130A;
+    font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.01em;
+    padding:15px;border-radius:14px;
+    transition:transform .1s ease,filter .15s;
+  }
+  .btn-primary:active{transform:scale(.98);filter:brightness(1.05)}
+  .btn-ghost{
+    flex:none;
+    background:var(--surface);border:1px solid var(--line);
+    color:var(--muted);font-size:14px;font-weight:600;
+    padding:0 18px;border-radius:14px;
+  }
+
+  /* ---------- Bottom nav ---------- */
+  .nav{
+    position:fixed;left:0;right:0;bottom:0;
+    max-width:520px;margin:0 auto;
+    display:flex;
+    background:rgba(14,15,18,.86);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--line);
+    padding-bottom:var(--safe-bot);
+    z-index:35;
+  }
+  .nav button{
+    flex:1;padding:11px 0 10px;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    color:var(--faint);font-size:11px;font-weight:500;letter-spacing:.02em;
+  }
+  .nav button svg{width:22px;height:22px}
+  .nav button.on{color:var(--accent)}
+
+  /* ---------- History ---------- */
+  .hist{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);padding:15px 16px;margin-bottom:11px;
+  }
+  .hist .hh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .hist .hd{font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.02em}
+  .hist h3{font-family:var(--display);font-weight:700;font-size:16px;margin:2px 0 0}
+  .hist .tag{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.1em;text-transform:uppercase}
+  .hist .lines{margin-top:11px;display:flex;flex-direction:column;gap:6px}
+  .hist .line{display:flex;justify-content:space-between;gap:12px;font-size:13.5px}
+  .hist .line .nm{color:var(--muted)}
+  .hist .line .vl{font-family:var(--mono);font-size:12.5px;color:var(--text);text-align:right}
+  .hist .del{
+    margin-top:13px;width:100%;
+    font-size:12.5px;color:var(--danger);font-weight:600;
+    padding:9px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);
+  }
+  .hist .del:active{background:var(--accent-dim)}
+
+  /* ---------- Empty ---------- */
+  .empty{
+    text-align:center;color:var(--faint);
+    padding:64px 30px;
+  }
+  .empty .big{font-family:var(--display);font-weight:700;font-size:19px;color:var(--muted);margin-bottom:8px}
+  .empty p{font-size:14px;line-height:1.55;margin:0}
+
+  /* ---------- Rest timer ---------- */
+  .timer-fab{
+    position:fixed;right:16px;bottom:calc(84px + var(--safe-bot));
+    z-index:41;
+    width:52px;height:52px;border-radius:50%;
+    background:var(--surface);border:1px solid var(--line);
+    color:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:12px;font-weight:600;
+    box-shadow:0 6px 20px rgba(0,0,0,.45);
+  }
+  .timer-fab.run{border-color:var(--accent);background:var(--accent-dim)}
+  .timer-panel{
+    position:fixed;left:0;right:0;bottom:0;z-index:60;
+    max-width:520px;margin:0 auto;
+    background:var(--surface);border-top:1px solid var(--line);
+    border-radius:20px 20px 0 0;
+    padding:18px 18px calc(20px + var(--safe-bot));
+    transform:translateY(110%);transition:transform .28s cubic-bezier(.2,.8,.2,1);
+  }
+  .timer-panel.open{transform:translateY(0)}
+  .timer-panel .th{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .timer-panel .th span{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+  .timer-panel .th button{color:var(--muted);font-size:22px;line-height:1;padding:4px 8px}
+  .timer-display{
+    font-family:var(--mono);font-weight:600;font-size:52px;text-align:center;
+    letter-spacing:.02em;margin:4px 0 16px;
+    font-variant-numeric:tabular-nums;
+  }
+  .timer-display.zero{color:var(--done)}
+  .presets{display:flex;gap:8px;margin-bottom:12px}
+  .presets button{
+    flex:1;background:var(--surface-2);border:1px solid var(--line);
+    color:var(--text);font-family:var(--mono);font-size:14px;font-weight:600;
+    padding:12px 0;border-radius:11px;
+  }
+  .presets button:active{border-color:var(--accent);color:var(--accent)}
+  .timer-ctrl{display:flex;gap:8px}
+  .timer-ctrl button{
+    flex:1;padding:13px;border-radius:12px;font-weight:700;font-size:15px;font-family:var(--display);
+  }
+  .t-start{background:var(--accent);color:#17130A}
+  .t-reset{background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+
+  .scrim{
+    position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:55;
+    opacity:0;pointer-events:none;transition:opacity .25s;
+  }
+  .scrim.open{opacity:1;pointer-events:auto}
+
+  .toast{
+    position:fixed;left:50%;bottom:calc(96px + var(--safe-bot));
+    transform:translateX(-50%) translateY(20px);
+    background:var(--done-dim);border:1px solid var(--done);color:var(--done);
+    font-size:13.5px;font-weight:600;
+    padding:11px 18px;border-radius:12px;z-index:70;
+    opacity:0;pointer-events:none;transition:.3s;white-space:nowrap;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div id="app">
+  <div id="view"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* ============ PROGRAM DATA ============ */
+const PROGRAM = {
+  A:{
+    tag:"Gün A", day:"Çarşamba",
+    title:"Göğüs + Biceps + Bacak",
+    exercises:[
+      {n:"Incline bench press", s:4, r:"6-8",   rir:"2"},
+      {n:"Machine press",       s:3, r:"8-12",  rir:"1-2"},
+      {n:"High to low cable",   s:3, r:"12-15", rir:"0-1"},
+      {n:"Low to high cable",   s:3, r:"12-15", rir:"0-1"},
+      {n:"EZ curl",             s:4, r:"6-8",   rir:"1-2"},
+      {n:"Incline dumbbell curl",s:3,r:"10-12", rir:"0-1"},
+      {n:"Hammer curl",         s:3, r:"10-12", rir:"1"},
+      {n:"Leg extension",       s:3, r:"10-14", rir:"1"},
+      {n:"Calf raise",          s:3, r:"10-14", rir:"0-1"},
+    ]
+  },
+  B:{
+    tag:"Gün B", day:"Cuma",
+    title:"Omuz + Triceps",
+    exercises:[
+      {n:"Squat",                 s:4, r:"5",     rir:"2"},
+      {n:"Overhead press (makine)",s:4,r:"6-8",   rir:"2"},
+      {n:"Lateral raise",         s:4, r:"15-20", rir:"0-1"},
+      {n:"Face pull",             s:3, r:"12-15", rir:"0-1"},
+      {n:"Dips",                  s:3, r:"8-10",  rir:"1-2"},
+      {n:"Pushdown",              s:3, r:"8-12",  rir:"1"},
+      {n:"Overhead cable triceps",s:3, r:"10-12", rir:"0-1"},
+      {n:"Reverse curl",          s:3, r:"12-15", rir:"0-1"},
+    ]
+  },
+  C:{
+    tag:"Gün C", day:"Pazar",
+    title:"Sırt + Kol",
+    base:[
+      {n:"Squat",         s:3, r:"10",    rir:"2"},
+      {n:"Lat pulldown",  s:4, r:"8-12",  rir:"1-2"},
+      {n:"Seated row",    s:4, r:"8-12",  rir:"1-2"},
+      {n:"Rope pullover", s:4, r:"10-12", rir:"0-1"},
+      {n:"Shrug",         s:3, r:"10-15", rir:"1"},
+      {n:"Back extension",s:3, r:"12-15", rir:"2"},
+    ],
+    odd:[ /* Tek haftalar — Biceps */
+      {n:"EZ curl",              s:4, r:"6-8",   rir:"1-2"},
+      {n:"Incline dumbbell curl",s:3, r:"10-12", rir:"0-1"},
+      {n:"Hammer curl",          s:3, r:"10-12", rir:"1"},
+    ],
+    even:[ /* Çift haftalar — Triceps */
+      {n:"Pushdown",              s:3, r:"8-12",  rir:"1"},
+      {n:"Overhead cable triceps",s:3, r:"10-12", rir:"0-1"},
+    ]
+  }
+};
+
+/* ============ STORAGE ============ */
+const HKEY="antrenman_history_v1";
+function loadHistory(){
+  try{return JSON.parse(localStorage.getItem(HKEY))||[]}catch(e){return[]}
+}
+function saveHistory(h){
+  try{localStorage.setItem(HKEY,JSON.stringify(h))}catch(e){}
+}
+
+/* ============ HELPERS ============ */
+function isoWeek(d){
+  const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  const day=t.getUTCDay()||7;
+  t.setUTCDate(t.getUTCDate()+4-day);
+  const ys=new Date(Date.UTC(t.getUTCFullYear(),0,1));
+  return Math.ceil((((t-ys)/86400000)+1)/7);
+}
+function fmtDate(iso){
+  const d=new Date(iso);
+  const gun=["Paz","Pzt","Sal","Çar","Per","Cum","Cmt"][d.getDay()];
+  const ay=["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"][d.getMonth()];
+  return `${d.getDate()} ${ay} ${gun}`;
+}
+function relDate(iso){
+  const d=new Date(iso), now=new Date();
+  const days=Math.round((now.setHours(0,0,0,0)-new Date(iso).setHours(0,0,0,0))/86400000);
+  if(days===0)return"bugün";
+  if(days===1)return"dün";
+  if(days<7)return days+" gün önce";
+  if(days<14)return"geçen hafta";
+  return Math.floor(days/7)+" hafta önce";
+}
+function lastSessionFor(dayKey){
+  const h=loadHistory().filter(s=>s.dayKey===dayKey);
+  return h.length?h[h.length-1]:null;
+}
+function num(v){const n=parseFloat(v);return isNaN(n)?null:n}
+
+/* ============ APP STATE ============ */
+let state={tab:"home"};        // tab: home | history
+let view={mode:"home"};        // mode: home | session | history
+let currentArm="auto";
+const root=document.getElementById("view");
+
+/* ============ ICONS ============ */
+const IC={
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>',
+  dumbbell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M4 8.5v7M17.5 6.5v11M20 8.5v7M6.5 12h11"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 1.8"/></svg>',
+  chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>'
+};
+
+/* ============ RENDER: HOME ============ */
+function renderHome(){
+  const wk=isoWeek(new Date());
+  const parity=wk%2? "Tek":"Çift";
+  const arm=wk%2? "Biceps":"Triceps";
+  let html=`
+  <div class="top">
+    <div>
+      <p class="eyebrow">Antrenman Defteri</p>
+      <h1>Bugün ne var?</h1>
+    </div>
+    <div class="week-pill">Hafta ${wk}<br><b>${parity} · ${arm}</b></div>
+  </div>
+  <main>
+    <div class="section-label">Antrenman Günleri</div>`;
+
+  ["A","B","C"].forEach(k=>{
+    const p=PROGRAM[k];
+    const count = k==="C" ? p.base.length+(wk%2?p.odd.length:p.even.length) : p.exercises.length;
+    const last=lastSessionFor(k);
+    html+=`
+    <button class="daycard" onclick="openSession('${k}')">
+      <span class="arrow">${IC.chev.replace('M15 6l-6 6 6 6','M9 6l6 6-6 6')}</span>
+      <span class="tag">${p.tag} <span class="dl">· ${p.day}</span></span>
+      <h2>${p.title}</h2>
+      <div class="meta">
+        <span>${count} hareket</span>
+        ${last?`<span class="dot">·</span><span class="last">Son: ${relDate(last.date)}</span>`
+              :`<span class="dot">·</span><span>henüz kayıt yok</span>`}
+      </div>
+    </button>`;
+  });
+
+  html+=`</main>`;
+  root.innerHTML=html;
+  renderNav();
+}
+
+/* ============ RENDER: SESSION ============ */
+function getExercises(dayKey){
+  const p=PROGRAM[dayKey];
+  if(dayKey!=="C") return p.exercises;
+  const wk=isoWeek(new Date());
+  let armBlock;
+  if(currentArm==="auto") armBlock = wk%2?"odd":"even";
+  else armBlock = currentArm;
+  return p.base.concat(armBlock==="odd"?p.odd:p.even);
+}
+
+// session working data: { dayKey, entries: { key:[{kg,reps,done}] } }
+let sess=null;
+
+function openSession(dayKey){
+  const p=PROGRAM[dayKey];
+  currentArm="auto";
+  const prev=lastSessionFor(dayKey);
+  sess={dayKey, entries:{}};
+  const exs=getExercises(dayKey);
+  exs.forEach(ex=>{
+    sess.entries[ex.n]=[];
+    const prevSets = prev && prev.entries && prev.entries[ex.n] ? prev.entries[ex.n] : [];
+    for(let i=0;i<ex.s;i++){
+      const pv=prevSets[i];
+      sess.entries[ex.n].push({
+        kg: pv&&pv.kg!=null ? pv.kg : "",
+        reps: pv&&pv.reps!=null ? pv.reps : "",
+        done:false
+      });
+    }
+  });
+  view={mode:"session",dayKey};
+  renderSession();
+  window.scrollTo(0,0);
+}
+
+function renderSession(){
+  const dayKey=view.dayKey, p=PROGRAM[dayKey];
+  const prev=lastSessionFor(dayKey);
+  const wk=isoWeek(new Date());
+  const exs=getExercises(dayKey);
+
+  let html=`
+  <div class="backrow">
+    <button class="backbtn" onclick="goHome()">${IC.chev} Günler</button>
+  </div>
+  <div class="sesshead">
+    <span class="tag">${p.tag} · ${p.day}</span>
+    <h1>${p.title}</h1>
+    <div class="sub">Her set için kg ve tekrar sayısını gir, ✓ ile tamamla.</div>
+  </div>`;
+
+  if(dayKey==="C"){
+    const isOdd = currentArm==="auto" ? (wk%2===1) : currentArm==="odd";
+    html+=`
+    <div class="armtoggle">
+      <button class="${isOdd?'on':''}" onclick="setArm('odd')">Biceps · Tek</button>
+      <button class="${!isOdd?'on':''}" onclick="setArm('even')">Triceps · Çift</button>
+    </div>`;
+  }
+
+  html+=`<main id="exlist">`;
+  exs.forEach((ex,ei)=>{
+    const prevSets = prev && prev.entries && prev.entries[ex.n] ? prev.entries[ex.n] : null;
+    let prevTxt="";
+    if(prevSets){
+      const parts=prevSets.filter(s=>s.kg!=null||s.reps!=null)
+        .map(s=>`${s.kg??"–"}×${s.reps??"–"}`);
+      if(parts.length) prevTxt=`<div class="ex-prev"><b>Önceki (${relDate(prev.date)}):</b> ${parts.join("  ·  ")}</div>`;
+    }
+    html+=`
+    <div class="exercise" data-ex="${ei}">
+      <div class="ex-head">
+        <h3>${ex.n}</h3>
+        <div class="ex-target"><b>${ex.s} × ${ex.r}</b><br>RIR <span class="rir">${ex.rir}</span></div>
+      </div>
+      ${prevTxt}
+      <div class="sets">
+        <div class="colhead"><span>#</span><span>Ağırlık</span><span>Tekrar</span><span>✓</span></div>
+        ${sess.entries[ex.n].map((_,si)=>setRowHTML(ex.n,si)).join("")}
+      </div>
+    </div>`;
+  });
+  html+=`</main>`;
+
+  html+=`
+  <div class="savebar">
+    <button class="btn-primary" onclick="finishSession()">Antrenmanı Kaydet</button>
+    <button class="btn-ghost" onclick="goHome()">İptal</button>
+  </div>
+  <button class="timer-fab" id="timerFab" onclick="openTimer()">${IC.clock}</button>`;
+
+  root.innerHTML=html;
+}
+
+function setRowHTML(exName,si){
+  const e=sess.entries[exName][si];
+  const kgFilled=e.kg!==""&&e.kg!=null;
+  const rFilled=e.reps!==""&&e.reps!=null;
+  return `
+  <div class="setrow ${e.done?'done':''}" data-set="${si}" id="row-${cssId(exName)}-${si}">
+    <div class="sidx">${si+1}</div>
+    <div class="field ${kgFilled?'filled':''}">
+      <button onclick="step('${jsEsc(exName)}',${si},'kg',-1)">–</button>
+      <input inputmode="decimal" value="${e.kg}" placeholder="—"
+        oninput="setVal('${jsEsc(exName)}',${si},'kg',this.value)">
+      <span class="unit">kg</span>
+      <button onclick="step('${jsEsc(exName)}',${si},'kg',1)">+</button>
+    </div>
+    <div class="field ${rFilled?'filled':''}">
+      <button onclick="step('${jsEsc(exName)}',${si},'reps',-1)">–</button>
+      <input inputmode="numeric" value="${e.reps}" placeholder="—"
+        oninput="setVal('${jsEsc(exName)}',${si},'reps',this.value)">
+      <button onclick="step('${jsEsc(exName)}',${si},'reps',1)">+</button>
+    </div>
+    <button class="done-btn ${e.done?'on':''}" onclick="toggleDone('${jsEsc(exName)}',${si})">${IC.check}</button>
+  </div>`;
+}
+function cssId(s){return s.replace(/[^a-z0-9]/gi,"")}
+function jsEsc(s){return s.replace(/'/g,"\\'")}
+
+function setVal(ex,si,f,v){ sess.entries[ex][si][f]=v; }
+
+function step(ex,si,f,dir){
+  const e=sess.entries[ex][si];
+  let cur=num(e[f]);
+  if(cur==null){
+    // seed from previous filled set of same field
+    for(let j=si-1;j>=0;j--){const pv=num(sess.entries[ex][j][f]); if(pv!=null){cur=pv;break;}}
+    if(cur==null) cur = f==="kg"?0:0;
+  }
+  const inc = f==="kg"?2.5:1;
+  let nv=cur+dir*inc;
+  if(nv<0)nv=0;
+  nv=Math.round(nv*100)/100;
+  e[f]=nv;
+  refreshRow(ex,si);
+}
+
+function toggleDone(ex,si){
+  const arr=sess.entries[ex];
+  const e=arr[si];
+  e.done=!e.done;
+  if(e.done){
+    if(navigator.vibrate)navigator.vibrate(12);
+    // carry values into next empty set for convenience
+    const nx=arr[si+1];
+    if(nx && !nx.done){
+      if((nx.kg===""||nx.kg==null)&&e.kg!=="") nx.kg=e.kg;
+      if((nx.reps===""||nx.reps==null)&&e.reps!=="") nx.reps=e.reps;
+      refreshRow(ex,si+1);
+    }
+    // auto-suggest rest timer if not running
+    autoTimerHint();
+  }
+  refreshRow(ex,si);
+}
+
+function refreshRow(ex,si){
+  const el=document.getElementById(`row-${cssId(ex)}-${si}`);
+  if(!el)return;
+  const wrap=document.createElement("div");
+  wrap.innerHTML=setRowHTML(ex,si).trim();
+  el.replaceWith(wrap.firstChild);
+}
+
+function setArm(which){
+  currentArm=which;
+  // rebuild entries for changed arm block while keeping base sets
+  const dayKey="C", p=PROGRAM.C, prev=lastSessionFor("C");
+  const base=p.base, arm=which==="odd"?p.odd:p.even;
+  const newEntries={};
+  base.concat(arm).forEach(ex=>{
+    if(sess.entries[ex.n]){ newEntries[ex.n]=sess.entries[ex.n]; return; }
+    const prevSets = prev && prev.entries && prev.entries[ex.n] ? prev.entries[ex.n] : [];
+    newEntries[ex.n]=[];
+    for(let i=0;i<ex.s;i++){
+      const pv=prevSets[i];
+      newEntries[ex.n].push({kg:pv&&pv.kg!=null?pv.kg:"",reps:pv&&pv.reps!=null?pv.reps:"",done:false});
+    }
+  });
+  sess.entries=newEntries;
+  renderSession();
+}
+
+function finishSession(){
+  // collect only sets that have data
+  const dayKey=sess.dayKey, p=PROGRAM[dayKey];
+  const entries={};
+  let any=false;
+  Object.keys(sess.entries).forEach(name=>{
+    const kept=sess.entries[name]
+      .filter(s=>(s.kg!==""&&s.kg!=null)||(s.reps!==""&&s.reps!=null)||s.done)
+      .map(s=>({kg:num(s.kg),reps:num(s.reps),done:!!s.done}));
+    if(kept.length){entries[name]=kept;any=true;}
+  });
+  if(!any){ toast("Kaydedilecek veri yok"); return; }
+  const rec={
+    id:Date.now(),
+    dayKey,
+    tag:p.tag,
+    title:p.title,
+    date:new Date().toISOString(),
+    entries
+  };
+  const h=loadHistory();
+  h.push(rec);
+  saveHistory(h);
+  if(navigator.vibrate)navigator.vibrate([16,40,16]);
+  goHome();
+  toast("Antrenman kaydedildi ✓");
+}
+
+/* ============ RENDER: HISTORY ============ */
+function renderHistory(){
+  const h=loadHistory().slice().reverse();
+  let html=`
+  <div class="top">
+    <div>
+      <p class="eyebrow">Kayıtlar</p>
+      <h1>Geçmiş</h1>
+    </div>
+    ${h.length?`<div class="week-pill">${h.length}<br><b>antrenman</b></div>`:``}
+  </div>
+  <main>`;
+
+  if(!h.length){
+    html+=`<div class="empty">
+      <div class="big">Henüz kayıt yok</div>
+      <p>Bir antrenman gününü açıp setlerini işaretle, kaydettiğinde burada listelenecek.</p>
+    </div>`;
+  }else{
+    h.forEach(s=>{
+      html+=`
+      <div class="hist">
+        <div class="hh">
+          <div>
+            <span class="tag">${s.tag}</span>
+            <h3>${s.title}</h3>
+          </div>
+          <div class="hd">${fmtDate(s.date)}</div>
+        </div>
+        <div class="lines">
+          ${Object.keys(s.entries).map(name=>{
+            const sets=s.entries[name];
+            const txt=sets.map(x=>`${x.kg??"–"}×${x.reps??"–"}`).join("  ");
+            return `<div class="line"><span class="nm">${name}</span><span class="vl">${txt}</span></div>`;
+          }).join("")}
+        </div>
+        <button class="del" onclick="deleteSession(${s.id})">Bu kaydı sil</button>
+      </div>`;
+    });
+  }
+  html+=`</main>`;
+  root.innerHTML=html;
+  renderNav();
+}
+
+function deleteSession(id){
+  if(!confirm("Bu antrenman kaydı silinsin mi?"))return;
+  const h=loadHistory().filter(s=>s.id!==id);
+  saveHistory(h);
+  renderHistory();
+  toast("Kayıt silindi");
+}
+
+/* ============ NAV ============ */
+function renderNav(){
+  const old=document.querySelector(".nav"); if(old)old.remove();
+  const nav=document.createElement("div");
+  nav.className="nav";
+  nav.innerHTML=`
+    <button class="${state.tab==='home'?'on':''}" onclick="switchTab('home')">
+      ${IC.dumbbell}<span>Antrenman</span>
+    </button>
+    <button class="${state.tab==='history'?'on':''}" onclick="switchTab('history')">
+      ${IC.clock}<span>Geçmiş</span>
+    </button>`;
+  document.getElementById("app").appendChild(nav);
+}
+function switchTab(t){
+  state.tab=t;
+  if(t==="home"){view={mode:"home"};renderHome();}
+  else {view={mode:"history"};renderHistory();}
+  window.scrollTo(0,0);
+}
+function goHome(){
+  state.tab="home";
+  view={mode:"home"};
+  sess=null;
+  renderHome();
+  window.scrollTo(0,0);
+}
+
+/* ============ REST TIMER ============ */
+let timer={left:90,base:90,id:null,running:false};
+function ensureTimerDom(){
+  if(document.getElementById("timerPanel"))return;
+  const scrim=document.createElement("div");
+  scrim.className="scrim";scrim.id="timerScrim";scrim.onclick=closeTimer;
+  const panel=document.createElement("div");
+  panel.className="timer-panel";panel.id="timerPanel";
+  panel.innerHTML=`
+    <div class="th"><span>Dinlenme Süresi</span><button onclick="closeTimer()">×</button></div>
+    <div class="timer-display" id="tDisp">1:30</div>
+    <div class="presets">
+      <button onclick="setTimer(60)">60s</button>
+      <button onclick="setTimer(90)">90s</button>
+      <button onclick="setTimer(120)">2:00</button>
+      <button onclick="setTimer(180)">3:00</button>
+    </div>
+    <div class="timer-ctrl">
+      <button class="t-start" id="tToggle" onclick="toggleTimer()">Başlat</button>
+      <button class="t-reset" onclick="resetTimer()">Sıfırla</button>
+    </div>`;
+  document.getElementById("app").appendChild(scrim);
+  document.getElementById("app").appendChild(panel);
+}
+function fmtT(s){const m=Math.floor(s/60);const ss=s%60;return`${m}:${ss<10?'0':''}${ss}`;}
+function paintTimer(){
+  const d=document.getElementById("tDisp");
+  if(d){d.textContent=fmtT(Math.max(0,timer.left));d.classList.toggle("zero",timer.left<=0);}
+  const fab=document.getElementById("timerFab");
+  if(fab){
+    fab.classList.toggle("run",timer.running);
+    fab.innerHTML= timer.running? `<span>${fmtT(Math.max(0,timer.left))}</span>` : IC.clock;
+  }
+  const tg=document.getElementById("tToggle");
+  if(tg)tg.textContent=timer.running?"Duraklat":"Başlat";
+}
+function openTimer(){ensureTimerDom();paintTimer();
+  document.getElementById("timerScrim").classList.add("open");
+  document.getElementById("timerPanel").classList.add("open");
+}
+function closeTimer(){
+  const s=document.getElementById("timerScrim"),p=document.getElementById("timerPanel");
+  if(s)s.classList.remove("open"); if(p)p.classList.remove("open");
+}
+function setTimer(s){timer.base=s;timer.left=s;if(timer.running){stopTick();startTick();}paintTimer();}
+function toggleTimer(){ timer.running?stopTick():startTick(); }
+function startTick(){
+  if(timer.left<=0)timer.left=timer.base;
+  timer.running=true;
+  timer.id=setInterval(()=>{
+    timer.left--;
+    if(timer.left<=0){
+      stopTick();timer.left=0;
+      if(navigator.vibrate)navigator.vibrate([80,60,80,60,120]);
+    }
+    paintTimer();
+  },1000);
+  paintTimer();
+}
+function stopTick(){timer.running=false;if(timer.id){clearInterval(timer.id);timer.id=null;}paintTimer();}
+function resetTimer(){stopTick();timer.left=timer.base;paintTimer();}
+function autoTimerHint(){
+  const fab=document.getElementById("timerFab");
+  if(fab && !timer.running){ fab.animate([{transform:'scale(1)'},{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:340}); }
+}
+
+/* ============ TOAST ============ */
+let toastT=null;
+function toast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;t.classList.add("show");
+  clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove("show"),2200);
+}
+
+/* ============ BOOT ============ */
+renderHome();
+</script>
