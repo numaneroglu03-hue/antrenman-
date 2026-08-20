@@ -89,6 +89,45 @@
     text-align:right;line-height:1.25;
   }
   .week-pill b{color:var(--accent);font-weight:600}
+  .week-pill.tap{cursor:pointer;transition:border-color .15s}
+  .week-pill.tap:active{border-color:var(--accent)}
+
+  /* week editor */
+  .wk-display{
+    font-family:var(--mono);font-weight:600;font-size:52px;text-align:center;
+    letter-spacing:.02em;margin:2px 0 4px;font-variant-numeric:tabular-nums;
+  }
+  .wk-arm{text-align:center;font-size:14px;color:var(--muted);margin-bottom:16px}
+  .wk-arm b{color:var(--accent);font-weight:600}
+  .wk-step{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:18px}
+  .wk-step button{
+    width:54px;height:54px;border-radius:14px;
+    background:var(--surface-2);border:1px solid var(--line);
+    color:var(--accent);font-size:26px;font-weight:500;line-height:1;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .wk-step button:active{background:var(--accent-dim)}
+  .wk-note{font-size:12.5px;color:var(--faint);text-align:center;line-height:1.5;margin-bottom:16px}
+
+  /* ---------- Stats strip ---------- */
+  .stats{
+    display:flex;gap:10px;margin:2px 0 4px;
+  }
+  .stat{
+    flex:1;
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:14px;padding:12px 10px 10px;
+    text-align:center;
+  }
+  .stat .sv{
+    font-family:var(--mono);font-weight:600;font-size:22px;color:var(--accent);
+    line-height:1;font-variant-numeric:tabular-nums;
+  }
+  .stat.streak .sv{color:var(--done)}
+  .stat .sl{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin-top:6px;
+  }
 
   /* ---------- Scroll area ---------- */
   main{flex:1;padding:6px 16px 120px;min-height:0}
@@ -291,7 +330,13 @@
     border-radius:var(--radius);padding:15px 16px;margin-bottom:11px;
   }
   .hist .hh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-  .hist .hd{font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.02em}
+  .hist .hd{font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.02em;text-align:right;line-height:1.5}
+  .hist .hw{color:var(--accent);font-size:11px}
+  .hist .hstat{
+    font-family:var(--mono);font-size:12px;color:var(--muted);
+    margin-top:9px;padding-top:9px;border-top:1px solid var(--line-soft);
+    letter-spacing:.02em;
+  }
   .hist h3{font-family:var(--display);font-weight:700;font-size:16px;margin:2px 0 0}
   .hist .tag{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.1em;text-transform:uppercase}
   .hist .lines{margin-top:11px;display:flex;flex-direction:column;gap:6px}
@@ -440,25 +485,71 @@ const PROGRAM = {
 
 /* ============ STORAGE ============ */
 const HKEY="antrenman_history_v1";
+const WKEY="antrenman_week_anchor_v1";
 function loadHistory(){
   try{return JSON.parse(localStorage.getItem(HKEY))||[]}catch(e){return[]}
 }
 function saveHistory(h){
   try{localStorage.setItem(HKEY,JSON.stringify(h))}catch(e){}
 }
+function loadWeekAnchor(){
+  try{return JSON.parse(localStorage.getItem(WKEY))}catch(e){return null}
+}
+function saveWeekAnchor(a){
+  try{localStorage.setItem(WKEY,JSON.stringify(a))}catch(e){}
+}
 
 /* ============ HELPERS ============ */
-function isoWeek(d){
-  const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
-  const day=t.getUTCDay()||7;
-  t.setUTCDate(t.getUTCDate()+4-day);
-  const ys=new Date(Date.UTC(t.getUTCFullYear(),0,1));
-  return Math.ceil((((t-ys)/86400000)+1)/7);
+// Antrenman haftası: kullanıcının belirlediği 1. haftadan itibaren sayılır.
+function mondayOf(d){
+  const t=new Date(d); t.setHours(0,0,0,0);
+  const day=(t.getDay()+6)%7;   // Pzt=0 ... Paz=6
+  t.setDate(t.getDate()-day);
+  return t;
+}
+function currentWeek(){
+  const a=loadWeekAnchor();
+  const m0 = a && a.startMonday ? mondayOf(new Date(a.startMonday)) : mondayOf(new Date());
+  const diff=Math.round((mondayOf(new Date())-m0)/(7*86400000));
+  return diff+1;
+}
+function setCurrentWeek(n){
+  n=Math.max(1,Math.round(n)||1);
+  const m=mondayOf(new Date());
+  m.setDate(m.getDate()-(n-1)*7);
+  saveWeekAnchor({startMonday:m.toISOString()});
+}
+function sessionStats(entries){
+  let sets=0,vol=0;
+  Object.keys(entries).forEach(k=>entries[k].forEach(s=>{
+    sets++;
+    if(s.kg!=null&&s.reps!=null) vol+=s.kg*s.reps;
+  }));
+  return {sets,vol};
+}
+function fmtKg(v){ return Math.round(v).toLocaleString('tr-TR'); }
+function weekOfDate(iso){
+  const a=loadWeekAnchor();
+  const m0 = a&&a.startMonday ? mondayOf(new Date(a.startMonday)) : mondayOf(new Date());
+  return Math.round((mondayOf(new Date(iso))-m0)/(7*86400000))+1;
+}
+function computeStreak(){
+  const h=loadHistory(); if(!h.length) return 0;
+  const weeks=new Set(h.map(s=>weekOfDate(s.date)));
+  let w=currentWeek();
+  if(!weeks.has(w)) w--;          // bu hafta henüz antrenman yoksa önceki haftadan say
+  let streak=0;
+  while(weeks.has(w)){streak++;w--;}
+  return streak;
+}
+function thisWeekCount(){
+  const cur=currentWeek();
+  return loadHistory().filter(s=>weekOfDate(s.date)===cur).length;
 }
 function fmtDate(iso){
   const d=new Date(iso);
   const gun=["Paz","Pzt","Sal","Çar","Per","Cum","Cmt"][d.getDay()];
-  const ay=["Oca","�?ub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"][d.getMonth()];
+  const ay=["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"][d.getMonth()];
   return `${d.getDate()} ${ay} ${gun}`;
 }
 function relDate(iso){
@@ -492,18 +583,26 @@ const IC={
 
 /* ============ RENDER: HOME ============ */
 function renderHome(){
-  const wk=isoWeek(new Date());
+  const wk=currentWeek();
   const parity=wk%2? "Tek":"Çift";
   const arm=wk%2? "Biceps":"Triceps";
+  const streak=computeStreak(), twc=thisWeekCount(), total=loadHistory().length;
+  const statsHtml = total ? `
+    <div class="stats">
+      <div class="stat streak"><div class="sv">${streak}</div><div class="sl">Hafta Seri</div></div>
+      <div class="stat"><div class="sv">${twc}</div><div class="sl">Bu Hafta</div></div>
+      <div class="stat"><div class="sv">${total}</div><div class="sl">Toplam</div></div>
+    </div>` : '';
   let html=`
   <div class="top">
     <div>
       <p class="eyebrow">Antrenman Defteri</p>
       <h1>Bugün ne var?</h1>
     </div>
-    <div class="week-pill">Hafta ${wk}<br><b>${parity} · ${arm}</b></div>
+    <button class="week-pill tap" onclick="openWeek()">Hafta ${wk} ✎<br><b>${parity} · ${arm}</b></button>
   </div>
   <main>
+    ${statsHtml}
     <div class="section-label">Antrenman Günleri</div>`;
 
   ["A","B","C"].forEach(k=>{
@@ -532,9 +631,8 @@ function renderHome(){
 function getExercises(dayKey){
   const p=PROGRAM[dayKey];
   if(dayKey!=="C") return p.exercises;
-  const wk=isoWeek(new Date());
   let armBlock;
-  if(currentArm==="auto") armBlock = wk%2?"odd":"even";
+  if(currentArm==="auto") armBlock = currentWeek()%2?"odd":"even";
   else armBlock = currentArm;
   return p.base.concat(armBlock==="odd"?p.odd:p.even);
 }
@@ -568,7 +666,7 @@ function openSession(dayKey){
 function renderSession(){
   const dayKey=view.dayKey, p=PROGRAM[dayKey];
   const prev=lastSessionFor(dayKey);
-  const wk=isoWeek(new Date());
+  const wk=currentWeek();
   const exs=getExercises(dayKey);
 
   let html=`
@@ -737,9 +835,10 @@ function finishSession(){
   const h=loadHistory();
   h.push(rec);
   saveHistory(h);
+  const st=sessionStats(entries);
   if(navigator.vibrate)navigator.vibrate([16,40,16]);
   goHome();
-  toast("Antrenman kaydedildi ✓");
+  toast(`Kaydedildi · ${st.sets} set · ${fmtKg(st.vol)} kg`);
 }
 
 /* ============ RENDER: HISTORY ============ */
@@ -762,6 +861,7 @@ function renderHistory(){
     </div>`;
   }else{
     h.forEach(s=>{
+      const st=sessionStats(s.entries);
       html+=`
       <div class="hist">
         <div class="hh">
@@ -769,8 +869,9 @@ function renderHistory(){
             <span class="tag">${s.tag}</span>
             <h3>${s.title}</h3>
           </div>
-          <div class="hd">${fmtDate(s.date)}</div>
+          <div class="hd">${fmtDate(s.date)}<br><span class="hw">Hafta ${weekOfDate(s.date)}</span></div>
         </div>
+        <div class="hstat">${st.sets} set · ${fmtKg(st.vol)} kg</div>
         <div class="lines">
           ${Object.keys(s.entries).map(name=>{
             const sets=s.entries[name];
@@ -887,6 +988,54 @@ function resetTimer(){stopTick();timer.left=timer.base;paintTimer();}
 function autoTimerHint(){
   const fab=document.getElementById("timerFab");
   if(fab && !timer.running){ fab.animate([{transform:'scale(1)'},{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:340}); }
+}
+
+/* ============ WEEK EDITOR ============ */
+let wkTemp=1;
+function ensureWeekDom(){
+  if(document.getElementById("wkPanel"))return;
+  const scrim=document.createElement("div");
+  scrim.className="scrim";scrim.id="wkScrim";scrim.onclick=closeWeek;
+  const panel=document.createElement("div");
+  panel.className="timer-panel";panel.id="wkPanel";
+  panel.innerHTML=`
+    <div class="th"><span>Antrenman Haftası</span><button onclick="closeWeek()">×</button></div>
+    <div class="wk-display" id="wkDisp">1</div>
+    <div class="wk-arm" id="wkArm"></div>
+    <div class="wk-step">
+      <button onclick="wkStep(-1)">–</button>
+      <button onclick="wkStep(1)">+</button>
+    </div>
+    <div class="wk-note">Kaçıncı antrenman haftasındasın? Gün C'nin Biceps/Triceps sırası buna göre döner (tek → Biceps, çift → Triceps).</div>
+    <div class="timer-ctrl">
+      <button class="t-start" onclick="saveWeek()">Kaydet</button>
+      <button class="t-reset" onclick="closeWeek()">Vazgeç</button>
+    </div>`;
+  document.getElementById("app").appendChild(scrim);
+  document.getElementById("app").appendChild(panel);
+}
+function paintWeek(){
+  const d=document.getElementById("wkDisp");if(d)d.textContent=wkTemp;
+  const a=document.getElementById("wkArm");
+  if(a){const odd=wkTemp%2===1;a.innerHTML=`${odd?'Tek':'Çift'} hafta · <b>${odd?'Biceps':'Triceps'}</b>`;}
+}
+function wkStep(dir){wkTemp=Math.max(1,wkTemp+dir);paintWeek();}
+function openWeek(){
+  ensureWeekDom();
+  wkTemp=currentWeek();paintWeek();
+  document.getElementById("wkScrim").classList.add("open");
+  document.getElementById("wkPanel").classList.add("open");
+}
+function closeWeek(){
+  const s=document.getElementById("wkScrim"),p=document.getElementById("wkPanel");
+  if(s)s.classList.remove("open"); if(p)p.classList.remove("open");
+}
+function saveWeek(){
+  setCurrentWeek(wkTemp);
+  closeWeek();
+  if(navigator.vibrate)navigator.vibrate(12);
+  renderHome();
+  toast("Hafta güncellendi");
 }
 
 /* ============ TOAST ============ */
