@@ -148,7 +148,7 @@
   .sesshead h1{font-family:var(--display);font-weight:800;font-size:24px;margin:5px 0 0;letter-spacing:-.01em}
   .sesshead .sub{font-size:13px;color:var(--muted);margin-top:3px}
 
-  /* arm toggle (GÃ¼n C) */
+  /* arm toggle (Gün C) */
   .armtoggle{
     display:flex;gap:6px;margin:14px 16px 2px;
     background:var(--surface);border:1px solid var(--line);
@@ -387,8 +387,8 @@
 /* ============ PROGRAM DATA ============ */
 const PROGRAM = {
   A:{
-    tag:"GÃ¼n A", day:"Ã‡arÅŸamba",
-    title:"GÃ¶ÄŸÃ¼s + Biceps + Bacak",
+    tag:"Gün A", day:"Çarşamba",
+    title:"Göğüs + Biceps + Bacak",
     exercises:[
       {n:"Incline bench press", s:4, r:"6-8",   rir:"2"},
       {n:"Machine press",       s:3, r:"8-12",  rir:"1-2"},
@@ -402,7 +402,7 @@ const PROGRAM = {
     ]
   },
   B:{
-    tag:"GÃ¼n B", day:"Cuma",
+    tag:"Gün B", day:"Cuma",
     title:"Omuz + Triceps",
     exercises:[
       {n:"Squat",                 s:4, r:"5",     rir:"2"},
@@ -416,8 +416,8 @@ const PROGRAM = {
     ]
   },
   C:{
-    tag:"GÃ¼n C", day:"Pazar",
-    title:"SÄ±rt + Kol",
+    tag:"Gün C", day:"Pazar",
+    title:"Sırt + Kol",
     base:[
       {n:"Squat",         s:3, r:"10",    rir:"2"},
       {n:"Lat pulldown",  s:4, r:"8-12",  rir:"1-2"},
@@ -426,12 +426,12 @@ const PROGRAM = {
       {n:"Shrug",         s:3, r:"10-15", rir:"1"},
       {n:"Back extension",s:3, r:"12-15", rir:"2"},
     ],
-    odd:[ /* Tek haftalar â€” Biceps */
+    odd:[ /* Tek haftalar — Biceps */
       {n:"EZ curl",              s:4, r:"6-8",   rir:"1-2"},
       {n:"Incline dumbbell curl",s:3, r:"10-12", rir:"0-1"},
       {n:"Hammer curl",          s:3, r:"10-12", rir:"1"},
     ],
-    even:[ /* Ã‡ift haftalar â€” Triceps */
+    even:[ /* Çift haftalar — Triceps */
       {n:"Pushdown",              s:3, r:"8-12",  rir:"1"},
       {n:"Overhead cable triceps",s:3, r:"10-12", rir:"0-1"},
     ]
@@ -457,18 +457,18 @@ function isoWeek(d){
 }
 function fmtDate(iso){
   const d=new Date(iso);
-  const gun=["Paz","Pzt","Sal","Ã‡ar","Per","Cum","Cmt"][d.getDay()];
-  const ay=["Oca","Åub","Mar","Nis","May","Haz","Tem","AÄŸu","Eyl","Eki","Kas","Ara"][d.getMonth()];
+  const gun=["Paz","Pzt","Sal","Çar","Per","Cum","Cmt"][d.getDay()];
+  const ay=["Oca","�?ub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"][d.getMonth()];
   return `${d.getDate()} ${ay} ${gun}`;
 }
 function relDate(iso){
   const d=new Date(iso), now=new Date();
   const days=Math.round((now.setHours(0,0,0,0)-new Date(iso).setHours(0,0,0,0))/86400000);
-  if(days===0)return"bugÃ¼n";
-  if(days===1)return"dÃ¼n";
-  if(days<7)return days+" gÃ¼n Ã¶nce";
-  if(days<14)return"geÃ§en hafta";
-  return Math.floor(days/7)+" hafta Ã¶nce";
+  if(days===0)return"bugün";
+  if(days===1)return"dün";
+  if(days<7)return days+" gün önce";
+  if(days<14)return"geçen hafta";
+  return Math.floor(days/7)+" hafta önce";
 }
 function lastSessionFor(dayKey){
   const h=loadHistory().filter(s=>s.dayKey===dayKey);
@@ -493,18 +493,18 @@ const IC={
 /* ============ RENDER: HOME ============ */
 function renderHome(){
   const wk=isoWeek(new Date());
-  const parity=wk%2? "Tek":"Ã‡ift";
+  const parity=wk%2? "Tek":"Çift";
   const arm=wk%2? "Biceps":"Triceps";
   let html=`
   <div class="top">
     <div>
       <p class="eyebrow">Antrenman Defteri</p>
-      <h1>BugÃ¼n ne var?</h1>
+      <h1>Bugün ne var?</h1>
     </div>
-    <div class="week-pill">Hafta ${wk}<br><b>${parity} Â· ${arm}</b></div>
+    <div class="week-pill">Hafta ${wk}<br><b>${parity} · ${arm}</b></div>
   </div>
   <main>
-    <div class="section-label">Antrenman GÃ¼nleri</div>`;
+    <div class="section-label">Antrenman Günleri</div>`;
 
   ["A","B","C"].forEach(k=>{
     const p=PROGRAM[k];
@@ -513,12 +513,12 @@ function renderHome(){
     html+=`
     <button class="daycard" onclick="openSession('${k}')">
       <span class="arrow">${IC.chev.replace('M15 6l-6 6 6 6','M9 6l6 6-6 6')}</span>
-      <span class="tag">${p.tag} <span class="dl">Â· ${p.day}</span></span>
+      <span class="tag">${p.tag} <span class="dl">· ${p.day}</span></span>
       <h2>${p.title}</h2>
       <div class="meta">
         <span>${count} hareket</span>
-        ${last?`<span class="dot">Â·</span><span class="last">Son: ${relDate(last.date)}</span>`
-              :`<span class="dot">Â·</span><span>henÃ¼z kayÄ±t yok</span>`}
+        ${last?`<span class="dot">·</span><span class="last">Son: ${relDate(last.date)}</span>`
+              :`<span class="dot">·</span><span>henüz kayıt yok</span>`}
       </div>
     </button>`;
   });
@@ -573,20 +573,20 @@ function renderSession(){
 
   let html=`
   <div class="backrow">
-    <button class="backbtn" onclick="goHome()">${IC.chev} GÃ¼nler</button>
+    <button class="backbtn" onclick="goHome()">${IC.chev} Günler</button>
   </div>
   <div class="sesshead">
-    <span class="tag">${p.tag} Â· ${p.day}</span>
+    <span class="tag">${p.tag} · ${p.day}</span>
     <h1>${p.title}</h1>
-    <div class="sub">Her set iÃ§in kg ve tekrar sayÄ±sÄ±nÄ± gir, âœ“ ile tamamla.</div>
+    <div class="sub">Her set için kg ve tekrar sayısını gir, ✓ ile tamamla.</div>
   </div>`;
 
   if(dayKey==="C"){
     const isOdd = currentArm==="auto" ? (wk%2===1) : currentArm==="odd";
     html+=`
     <div class="armtoggle">
-      <button class="${isOdd?'on':''}" onclick="setArm('odd')">Biceps Â· Tek</button>
-      <button class="${!isOdd?'on':''}" onclick="setArm('even')">Triceps Â· Ã‡ift</button>
+      <button class="${isOdd?'on':''}" onclick="setArm('odd')">Biceps · Tek</button>
+      <button class="${!isOdd?'on':''}" onclick="setArm('even')">Triceps · Çift</button>
     </div>`;
   }
 
@@ -596,18 +596,18 @@ function renderSession(){
     let prevTxt="";
     if(prevSets){
       const parts=prevSets.filter(s=>s.kg!=null||s.reps!=null)
-        .map(s=>`${s.kg??"â€“"}Ã—${s.reps??"â€“"}`);
-      if(parts.length) prevTxt=`<div class="ex-prev"><b>Ã–nceki (${relDate(prev.date)}):</b> ${parts.join("  Â·  ")}</div>`;
+        .map(s=>`${s.kg??"–"}×${s.reps??"–"}`);
+      if(parts.length) prevTxt=`<div class="ex-prev"><b>Önceki (${relDate(prev.date)}):</b> ${parts.join("  ·  ")}</div>`;
     }
     html+=`
     <div class="exercise" data-ex="${ei}">
       <div class="ex-head">
         <h3>${ex.n}</h3>
-        <div class="ex-target"><b>${ex.s} Ã— ${ex.r}</b><br>RIR <span class="rir">${ex.rir}</span></div>
+        <div class="ex-target"><b>${ex.s} × ${ex.r}</b><br>RIR <span class="rir">${ex.rir}</span></div>
       </div>
       ${prevTxt}
       <div class="sets">
-        <div class="colhead"><span>#</span><span>AÄŸÄ±rlÄ±k</span><span>Tekrar</span><span>âœ“</span></div>
+        <div class="colhead"><span>#</span><span>Ağırlık</span><span>Tekrar</span><span>✓</span></div>
         ${sess.entries[ex.n].map((_,si)=>setRowHTML(ex.n,si)).join("")}
       </div>
     </div>`;
@@ -616,8 +616,8 @@ function renderSession(){
 
   html+=`
   <div class="savebar">
-    <button class="btn-primary" onclick="finishSession()">AntrenmanÄ± Kaydet</button>
-    <button class="btn-ghost" onclick="goHome()">Ä°ptal</button>
+    <button class="btn-primary" onclick="finishSession()">Antrenmanı Kaydet</button>
+    <button class="btn-ghost" onclick="goHome()">İptal</button>
   </div>
   <button class="timer-fab" id="timerFab" onclick="openTimer()">${IC.clock}</button>`;
 
@@ -632,15 +632,15 @@ function setRowHTML(exName,si){
   <div class="setrow ${e.done?'done':''}" data-set="${si}" id="row-${cssId(exName)}-${si}">
     <div class="sidx">${si+1}</div>
     <div class="field ${kgFilled?'filled':''}">
-      <button onclick="step('${jsEsc(exName)}',${si},'kg',-1)">â€“</button>
-      <input inputmode="decimal" value="${e.kg}" placeholder="â€”"
+      <button onclick="step('${jsEsc(exName)}',${si},'kg',-1)">–</button>
+      <input inputmode="decimal" value="${e.kg}" placeholder="—"
         oninput="setVal('${jsEsc(exName)}',${si},'kg',this.value)">
       <span class="unit">kg</span>
       <button onclick="step('${jsEsc(exName)}',${si},'kg',1)">+</button>
     </div>
     <div class="field ${rFilled?'filled':''}">
-      <button onclick="step('${jsEsc(exName)}',${si},'reps',-1)">â€“</button>
-      <input inputmode="numeric" value="${e.reps}" placeholder="â€”"
+      <button onclick="step('${jsEsc(exName)}',${si},'reps',-1)">–</button>
+      <input inputmode="numeric" value="${e.reps}" placeholder="—"
         oninput="setVal('${jsEsc(exName)}',${si},'reps',this.value)">
       <button onclick="step('${jsEsc(exName)}',${si},'reps',1)">+</button>
     </div>
@@ -739,7 +739,7 @@ function finishSession(){
   saveHistory(h);
   if(navigator.vibrate)navigator.vibrate([16,40,16]);
   goHome();
-  toast("Antrenman kaydedildi âœ“");
+  toast("Antrenman kaydedildi ✓");
 }
 
 /* ============ RENDER: HISTORY ============ */
@@ -748,8 +748,8 @@ function renderHistory(){
   let html=`
   <div class="top">
     <div>
-      <p class="eyebrow">KayÄ±tlar</p>
-      <h1>GeÃ§miÅŸ</h1>
+      <p class="eyebrow">Kayıtlar</p>
+      <h1>Geçmiş</h1>
     </div>
     ${h.length?`<div class="week-pill">${h.length}<br><b>antrenman</b></div>`:``}
   </div>
@@ -757,8 +757,8 @@ function renderHistory(){
 
   if(!h.length){
     html+=`<div class="empty">
-      <div class="big">HenÃ¼z kayÄ±t yok</div>
-      <p>Bir antrenman gÃ¼nÃ¼nÃ¼ aÃ§Ä±p setlerini iÅŸaretle, kaydettiÄŸinde burada listelenecek.</p>
+      <div class="big">Henüz kayıt yok</div>
+      <p>Bir antrenman gününü açıp setlerini işaretle, kaydettiğinde burada listelenecek.</p>
     </div>`;
   }else{
     h.forEach(s=>{
@@ -774,11 +774,11 @@ function renderHistory(){
         <div class="lines">
           ${Object.keys(s.entries).map(name=>{
             const sets=s.entries[name];
-            const txt=sets.map(x=>`${x.kg??"â€“"}Ã—${x.reps??"â€“"}`).join("  ");
+            const txt=sets.map(x=>`${x.kg??"–"}×${x.reps??"–"}`).join("  ");
             return `<div class="line"><span class="nm">${name}</span><span class="vl">${txt}</span></div>`;
           }).join("")}
         </div>
-        <button class="del" onclick="deleteSession(${s.id})">Bu kaydÄ± sil</button>
+        <button class="del" onclick="deleteSession(${s.id})">Bu kaydı sil</button>
       </div>`;
     });
   }
@@ -788,11 +788,11 @@ function renderHistory(){
 }
 
 function deleteSession(id){
-  if(!confirm("Bu antrenman kaydÄ± silinsin mi?"))return;
+  if(!confirm("Bu antrenman kaydı silinsin mi?"))return;
   const h=loadHistory().filter(s=>s.id!==id);
   saveHistory(h);
   renderHistory();
-  toast("KayÄ±t silindi");
+  toast("Kayıt silindi");
 }
 
 /* ============ NAV ============ */
@@ -805,7 +805,7 @@ function renderNav(){
       ${IC.dumbbell}<span>Antrenman</span>
     </button>
     <button class="${state.tab==='history'?'on':''}" onclick="switchTab('history')">
-      ${IC.clock}<span>GeÃ§miÅŸ</span>
+      ${IC.clock}<span>Geçmiş</span>
     </button>`;
   document.getElementById("app").appendChild(nav);
 }
@@ -832,7 +832,7 @@ function ensureTimerDom(){
   const panel=document.createElement("div");
   panel.className="timer-panel";panel.id="timerPanel";
   panel.innerHTML=`
-    <div class="th"><span>Dinlenme SÃ¼resi</span><button onclick="closeTimer()">Ã—</button></div>
+    <div class="th"><span>Dinlenme Süresi</span><button onclick="closeTimer()">×</button></div>
     <div class="timer-display" id="tDisp">1:30</div>
     <div class="presets">
       <button onclick="setTimer(60)">60s</button>
@@ -841,8 +841,8 @@ function ensureTimerDom(){
       <button onclick="setTimer(180)">3:00</button>
     </div>
     <div class="timer-ctrl">
-      <button class="t-start" id="tToggle" onclick="toggleTimer()">BaÅŸlat</button>
-      <button class="t-reset" onclick="resetTimer()">SÄ±fÄ±rla</button>
+      <button class="t-start" id="tToggle" onclick="toggleTimer()">Başlat</button>
+      <button class="t-reset" onclick="resetTimer()">Sıfırla</button>
     </div>`;
   document.getElementById("app").appendChild(scrim);
   document.getElementById("app").appendChild(panel);
@@ -857,7 +857,7 @@ function paintTimer(){
     fab.innerHTML= timer.running? `<span>${fmtT(Math.max(0,timer.left))}</span>` : IC.clock;
   }
   const tg=document.getElementById("tToggle");
-  if(tg)tg.textContent=timer.running?"Duraklat":"BaÅŸlat";
+  if(tg)tg.textContent=timer.running?"Duraklat":"Başlat";
 }
 function openTimer(){ensureTimerDom();paintTimer();
   document.getElementById("timerScrim").classList.add("open");
