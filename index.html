@@ -925,7 +925,11 @@ function goHome(){
 }
 
 /* ============ REST TIMER ============ */
-let timer={left:90,base:90,id:null,running:false};
+let timer={left:90,base:90,id:null,running:false,endAt:0,fired:false};
+// Dinlenme sürerken ekranı uyanık tut (destekleyen cihazlarda)
+let wakeLock=null;
+async function acquireWake(){ try{ if("wakeLock" in navigator){ wakeLock=await navigator.wakeLock.request("screen"); } }catch(e){} }
+function releaseWake(){ try{ if(wakeLock){ wakeLock.release(); wakeLock=null; } }catch(e){} }
 function ensureTimerDom(){
   if(document.getElementById("timerPanel"))return;
   const scrim=document.createElement("div");
@@ -968,23 +972,47 @@ function closeTimer(){
   const s=document.getElementById("timerScrim"),p=document.getElementById("timerPanel");
   if(s)s.classList.remove("open"); if(p)p.classList.remove("open");
 }
-function setTimer(s){timer.base=s;timer.left=s;if(timer.running){stopTick();startTick();}paintTimer();}
+function setTimer(s){timer.base=s;timer.left=s;timer.fired=false;if(timer.running){startTick();}else{paintTimer();}}
 function toggleTimer(){ timer.running?stopTick():startTick(); }
-function startTick(){
-  if(timer.left<=0)timer.left=timer.base;
-  timer.running=true;
-  timer.id=setInterval(()=>{
-    timer.left--;
-    if(timer.left<=0){
-      stopTick();timer.left=0;
-      if(navigator.vibrate)navigator.vibrate([80,60,80,60,120]);
-    }
-    paintTimer();
-  },1000);
+// Bitiş saatine göre çalışır: uygulama arka plandayken JS dursa da,
+// geri dönüldüğünde gerçek geçen zamandan kalan süre doğru hesaplanır.
+function remainingFromEnd(){ return Math.max(0,Math.ceil((timer.endAt-Date.now())/1000)); }
+function tickTimer(){
+  timer.left=remainingFromEnd();
+  if(timer.left<=0){
+    timer.left=0;
+    if(!timer.fired){ timer.fired=true; if(navigator.vibrate)navigator.vibrate([80,60,80,60,120]); }
+    stopTick();
+  }
   paintTimer();
 }
-function stopTick(){timer.running=false;if(timer.id){clearInterval(timer.id);timer.id=null;}paintTimer();}
-function resetTimer(){stopTick();timer.left=timer.base;paintTimer();}
+function startTick(){
+  if(timer.left<=0)timer.left=timer.base;
+  timer.running=true; timer.fired=false;
+  timer.endAt=Date.now()+timer.left*1000;
+  if(timer.id)clearInterval(timer.id);
+  timer.id=setInterval(tickTimer,250);
+  acquireWake();
+  paintTimer();
+}
+function stopTick(){
+  if(timer.running && timer.endAt) timer.left=remainingFromEnd();
+  timer.running=false;
+  if(timer.id){clearInterval(timer.id);timer.id=null;}
+  releaseWake();
+  paintTimer();
+}
+function resetTimer(){
+  if(timer.id){clearInterval(timer.id);timer.id=null;}
+  timer.running=false; timer.fired=false; timer.endAt=0;
+  releaseWake();
+  timer.left=timer.base; paintTimer();
+}
+// Uygulamaya geri dönüldüğünde sayacı gerçek zamana göre güncelle
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden && timer.running){ tickTimer(); if(timer.running) acquireWake(); }
+});
+window.addEventListener("pageshow",()=>{ if(timer.running) tickTimer(); });
 function autoTimerHint(){
   const fab=document.getElementById("timerFab");
   if(fab && !timer.running){ fab.animate([{transform:'scale(1)'},{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:340}); }
