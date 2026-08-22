@@ -382,6 +382,11 @@
   .timer-panel .th{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
   .timer-panel .th span{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
   .timer-panel .th button{color:var(--muted);font-size:22px;line-height:1;padding:4px 8px}
+  .timer-ctx{
+    text-align:center;font-size:14px;color:var(--muted);
+    margin:-4px 0 6px;line-height:1.4;
+  }
+  .timer-ctx b{color:var(--text);font-weight:600;font-family:var(--display)}
   .timer-display{
     font-family:var(--mono);font-weight:600;font-size:52px;text-align:center;
     letter-spacing:.02em;margin:4px 0 16px;
@@ -779,6 +784,9 @@ function toggleDone(ex,si){
       if((nx.reps===""||nx.reps==null)&&e.reps!=="") nx.reps=e.reps;
       refreshRow(ex,si+1);
     }
+    // dinlenilen hareketi/seti sayaç ekranına taşı
+    timerCtx={ex, set:si+1};
+    if(timer.running)paintTimer();
     // auto-suggest rest timer if not running
     autoTimerHint();
   }
@@ -926,6 +934,7 @@ function goHome(){
 
 /* ============ REST TIMER ============ */
 let timer={left:90,base:90,id:null,running:false,endAt:0,fired:false};
+let timerCtx=null;   // {ex, set} — dinlenilen hareket ve set
 // Dinlenme sürerken ekranı uyanık tut (destekleyen cihazlarda)
 let wakeLock=null;
 async function acquireWake(){ try{ if("wakeLock" in navigator){ wakeLock=await navigator.wakeLock.request("screen"); } }catch(e){} }
@@ -938,6 +947,7 @@ function ensureTimerDom(){
   panel.className="timer-panel";panel.id="timerPanel";
   panel.innerHTML=`
     <div class="th"><span>Dinlenme Süresi</span><button onclick="closeTimer()">×</button></div>
+    <div class="timer-ctx" id="tCtx"></div>
     <div class="timer-display" id="tDisp">1:30</div>
     <div class="presets">
       <button onclick="setTimer(60)">60s</button>
@@ -963,6 +973,8 @@ function paintTimer(){
   }
   const tg=document.getElementById("tToggle");
   if(tg)tg.textContent=timer.running?"Duraklat":"Başlat";
+  const cx=document.getElementById("tCtx");
+  if(cx) cx.innerHTML = timerCtx ? `<b>${timerCtx.ex}</b> · ${timerCtx.set}. set` : "Sıradaki set için dinlen";
 }
 function openTimer(){ensureTimerDom();paintTimer();
   document.getElementById("timerScrim").classList.add("open");
