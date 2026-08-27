@@ -332,6 +332,12 @@
   .hist .hh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
   .hist .hd{font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.02em;text-align:right;line-height:1.5}
   .hist .hw{color:var(--accent);font-size:11px}
+  .wk-group{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin:20px 4px 10px;padding-bottom:8px;border-bottom:1px solid var(--line-soft);
+  }
+  .wk-group>span:first-child{font-family:var(--display);font-weight:700;font-size:17px;color:var(--accent);letter-spacing:-.01em}
+  .wk-group .wc{font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
   .hist .hstat{
     font-family:var(--mono);font-size:12px;color:var(--muted);
     margin-top:9px;padding-top:9px;border-top:1px solid var(--line-soft);
@@ -538,9 +544,11 @@ function weekOfDate(iso){
   const m0 = a&&a.startMonday ? mondayOf(new Date(a.startMonday)) : mondayOf(new Date());
   return Math.round((mondayOf(new Date(iso))-m0)/(7*86400000))+1;
 }
+// Kayıtta saklı hafta varsa onu kullan (kalıcı); yoksa eski kayıtlar için tarihten hesapla
+function recWeek(s){ return s.week!=null ? s.week : weekOfDate(s.date); }
 function computeStreak(){
   const h=loadHistory(); if(!h.length) return 0;
-  const weeks=new Set(h.map(s=>weekOfDate(s.date)));
+  const weeks=new Set(h.map(recWeek));
   let w=currentWeek();
   if(!weeks.has(w)) w--;          // bu hafta henüz antrenman yoksa önceki haftadan say
   let streak=0;
@@ -549,7 +557,7 @@ function computeStreak(){
 }
 function thisWeekCount(){
   const cur=currentWeek();
-  return loadHistory().filter(s=>weekOfDate(s.date)===cur).length;
+  return loadHistory().filter(s=>recWeek(s)===cur).length;
 }
 function fmtDate(iso){
   const d=new Date(iso);
@@ -648,19 +656,13 @@ let sess=null;
 function openSession(dayKey){
   const p=PROGRAM[dayKey];
   currentArm="auto";
-  const prev=lastSessionFor(dayKey);
   sess={dayKey, entries:{}};
   const exs=getExercises(dayKey);
+  // Her hafta temiz sayfa: input'lar boş başlar (önceki değerler yalnızca "Önceki" satırında referans).
   exs.forEach(ex=>{
     sess.entries[ex.n]=[];
-    const prevSets = prev && prev.entries && prev.entries[ex.n] ? prev.entries[ex.n] : [];
     for(let i=0;i<ex.s;i++){
-      const pv=prevSets[i];
-      sess.entries[ex.n].push({
-        kg: pv&&pv.kg!=null ? pv.kg : "",
-        reps: pv&&pv.reps!=null ? pv.reps : "",
-        done:false
-      });
+      sess.entries[ex.n].push({kg:"",reps:"",done:false});
     }
   });
   view={mode:"session",dayKey};
@@ -804,16 +806,14 @@ function refreshRow(ex,si){
 function setArm(which){
   currentArm=which;
   // rebuild entries for changed arm block while keeping base sets
-  const dayKey="C", p=PROGRAM.C, prev=lastSessionFor("C");
+  const p=PROGRAM.C;
   const base=p.base, arm=which==="odd"?p.odd:p.even;
   const newEntries={};
   base.concat(arm).forEach(ex=>{
     if(sess.entries[ex.n]){ newEntries[ex.n]=sess.entries[ex.n]; return; }
-    const prevSets = prev && prev.entries && prev.entries[ex.n] ? prev.entries[ex.n] : [];
     newEntries[ex.n]=[];
     for(let i=0;i<ex.s;i++){
-      const pv=prevSets[i];
-      newEntries[ex.n].push({kg:pv&&pv.kg!=null?pv.kg:"",reps:pv&&pv.reps!=null?pv.reps:"",done:false});
+      newEntries[ex.n].push({kg:"",reps:"",done:false});
     }
   });
   sess.entries=newEntries;
@@ -837,6 +837,7 @@ function finishSession(){
     dayKey,
     tag:p.tag,
     title:p.title,
+    week:currentWeek(),          // haftayı kalıcı olarak kaydın içine yaz
     date:new Date().toISOString(),
     entries
   };
@@ -851,7 +852,11 @@ function finishSession(){
 
 /* ============ RENDER: HISTORY ============ */
 function renderHistory(){
-  const h=loadHistory().slice().reverse();
+  const h=loadHistory().slice().sort((a,b)=>{
+    const wa=recWeek(a), wb=recWeek(b);
+    if(wb!==wa) return wb-wa;                 // hafta: yeni (büyük) önce
+    return new Date(b.date)-new Date(a.date); // aynı hafta: yeni tarih önce
+  });
   let html=`
   <div class="top">
     <div>
@@ -868,7 +873,14 @@ function renderHistory(){
       <p>Bir antrenman gününü açıp setlerini işaretle, kaydettiğinde burada listelenecek.</p>
     </div>`;
   }else{
+    let lastWk=null;
     h.forEach(s=>{
+      const wk=recWeek(s);
+      if(wk!==lastWk){
+        const cnt=h.filter(x=>recWeek(x)===wk).length;
+        html+=`<div class="wk-group"><span>Hafta ${wk}</span><span class="wc">${cnt} antrenman</span></div>`;
+        lastWk=wk;
+      }
       const st=sessionStats(s.entries);
       html+=`
       <div class="hist">
@@ -877,7 +889,7 @@ function renderHistory(){
             <span class="tag">${s.tag}</span>
             <h3>${s.title}</h3>
           </div>
-          <div class="hd">${fmtDate(s.date)}<br><span class="hw">Hafta ${weekOfDate(s.date)}</span></div>
+          <div class="hd">${fmtDate(s.date)}</div>
         </div>
         <div class="hstat">${st.sets} set · ${fmtKg(st.vol)} kg</div>
         <div class="lines">
