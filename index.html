@@ -332,12 +332,24 @@
   .hist .hh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
   .hist .hd{font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.02em;text-align:right;line-height:1.5}
   .hist .hw{color:var(--accent);font-size:11px}
-  .wk-group{
-    display:flex;align-items:baseline;justify-content:space-between;
-    margin:20px 4px 10px;padding-bottom:8px;border-bottom:1px solid var(--line-soft);
+  /* week folders */
+  .wkfolder{
+    display:flex;align-items:center;gap:14px;width:100%;text-align:left;
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);padding:15px 16px;margin-bottom:11px;
+    transition:transform .12s ease,border-color .15s ease;
   }
-  .wk-group>span:first-child{font-family:var(--display);font-weight:700;font-size:17px;color:var(--accent);letter-spacing:-.01em}
-  .wk-group .wc{font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
+  .wkfolder:active{transform:scale(.985);border-color:var(--accent)}
+  .wf-ic{flex:none;width:26px;height:26px;color:var(--accent);display:flex;align-items:center;justify-content:center}
+  .wf-ic svg{width:26px;height:26px}
+  .wf-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+  .wf-title{font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:-.01em}
+  .wf-sub{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .wf-right{flex:none;display:flex;align-items:center;gap:8px}
+  .wf-vol{font-family:var(--mono);font-size:12px;color:var(--text);font-variant-numeric:tabular-nums}
+  .wf-arrow{color:var(--faint);display:flex}
+  .wf-arrow svg{width:20px;height:20px}
+  .histback{margin-bottom:12px}
   .hist .hstat{
     font-family:var(--mono);font-size:12px;color:var(--muted);
     margin-top:9px;padding-top:9px;border-top:1px solid var(--line-soft);
@@ -591,7 +603,9 @@ const IC={
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>',
   dumbbell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M4 8.5v7M17.5 6.5v11M20 8.5v7M6.5 12h11"/></svg>',
   clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 1.8"/></svg>',
-  chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>'
+  chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
+  chevR:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+  folder:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5a2 2 0 0 1 2-2h3.6a2 2 0 0 1 1.4.6l1 1a2 2 0 0 0 1.4.6H19a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>'
 };
 
 /* ============ RENDER: HOME ============ */
@@ -852,35 +866,48 @@ function finishSession(){
 
 /* ============ RENDER: HISTORY ============ */
 function renderHistory(){
-  const h=loadHistory().slice().sort((a,b)=>{
-    const wa=recWeek(a), wb=recWeek(b);
-    if(wb!==wa) return wb-wa;                 // hafta: yeni (büyük) önce
-    return new Date(b.date)-new Date(a.date); // aynı hafta: yeni tarih önce
-  });
+  const all=loadHistory();
+  const inWeek = view.histWeek!=null;
   let html=`
   <div class="top">
     <div>
-      <p class="eyebrow">Kayıtlar</p>
-      <h1>Geçmiş</h1>
+      <p class="eyebrow">${inWeek?`Hafta ${view.histWeek}`:'Kayıtlar'}</p>
+      <h1>${inWeek?'Bu hafta':'Geçmiş'}</h1>
     </div>
-    ${h.length?`<div class="week-pill">${h.length}<br><b>antrenman</b></div>`:``}
+    ${all.length?`<div class="week-pill">${all.length}<br><b>antrenman</b></div>`:``}
   </div>
   <main>`;
 
-  if(!h.length){
+  if(!all.length){
     html+=`<div class="empty">
       <div class="big">Henüz kayıt yok</div>
       <p>Bir antrenman gününü açıp setlerini işaretle, kaydettiğinde burada listelenecek.</p>
     </div>`;
+  }else if(!inWeek){
+    // ---- HAFTA KLASÖRLERİ ----
+    const map={};
+    all.forEach(s=>{ const w=recWeek(s); (map[w]=map[w]||[]).push(s); });
+    const weeks=Object.keys(map).map(Number).sort((a,b)=>b-a);
+    weeks.forEach(w=>{
+      const list=map[w];
+      let vol=0; const days=new Set();
+      list.forEach(s=>{ vol+=sessionStats(s.entries).vol; days.add(s.dayKey); });
+      const dTxt=['A','B','C'].filter(d=>days.has(d)).map(d=>'Gün '+d).join(' · ');
+      html+=`
+      <button class="wkfolder" onclick="openHistWeek(${w})">
+        <span class="wf-ic">${IC.folder}</span>
+        <span class="wf-main">
+          <span class="wf-title">Hafta ${w}</span>
+          <span class="wf-sub">${list.length} antrenman${dTxt?` · ${dTxt}`:''}</span>
+        </span>
+        <span class="wf-right"><span class="wf-vol">${fmtKg(vol)} kg</span><span class="wf-arrow">${IC.chevR}</span></span>
+      </button>`;
+    });
   }else{
-    let lastWk=null;
-    h.forEach(s=>{
-      const wk=recWeek(s);
-      if(wk!==lastWk){
-        const cnt=h.filter(x=>recWeek(x)===wk).length;
-        html+=`<div class="wk-group"><span>Hafta ${wk}</span><span class="wc">${cnt} antrenman</span></div>`;
-        lastWk=wk;
-      }
+    // ---- HAFTA DETAYI ----
+    html+=`<button class="backbtn histback" onclick="closeHistWeek()">${IC.chev} Haftalar</button>`;
+    const list=all.filter(s=>recWeek(s)===view.histWeek).sort((a,b)=>new Date(b.date)-new Date(a.date));
+    list.forEach(s=>{
       const st=sessionStats(s.entries);
       html+=`
       <div class="hist">
@@ -908,10 +935,15 @@ function renderHistory(){
   renderNav();
 }
 
+function openHistWeek(w){ view.histWeek=w; renderHistory(); window.scrollTo(0,0); }
+function closeHistWeek(){ view.histWeek=null; renderHistory(); window.scrollTo(0,0); }
+
 function deleteSession(id){
   if(!confirm("Bu antrenman kaydı silinsin mi?"))return;
   const h=loadHistory().filter(s=>s.id!==id);
   saveHistory(h);
+  // O haftada kayıt kalmadıysa klasör listesine dön
+  if(view.histWeek!=null && !h.some(s=>recWeek(s)===view.histWeek)) view.histWeek=null;
   renderHistory();
   toast("Kayıt silindi");
 }
